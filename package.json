@@ -6,7 +6,9 @@
   "dependencies": {
     "express": "~4.14.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine": "~2.5.2"
+  },
   "scripts": {
     "test": "jasmine"
   },
