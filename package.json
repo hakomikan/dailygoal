@@ -11,7 +11,8 @@
     "jasmine": "~2.5.2"
   },
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "postinstall": "bower install"
   },
   "repository": {
     "type": "git",
