@@ -1,0 +1,21 @@
+{
+  "name": "dailygoal",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "hakomikan <mail@s-taki.sakura.ne.jp>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/hakomikan/dailygoal",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1"
+  }
+}
