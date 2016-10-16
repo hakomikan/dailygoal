@@ -3,6 +3,5 @@ extends ./layout.pug
 block content
     h1 HelloWorld
     ul
-        li aaaaaaa
-        li bbbbbbb
-        li ccccccc
+        each goal in items
+            li #{goal.subject}
