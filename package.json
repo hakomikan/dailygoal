@@ -8,7 +8,12 @@
     "bower": "~1.7.9",
     "pug": "~2.0.0-beta6",
     "mongodb": "~2.2.10",
-    "mongoose": "~4.6.3"
+    "mongoose": "~4.6.3",
+    "passport": "~0.3.2",
+    "passport-openidconnect": "0.0.1",
+    "express-session": "~1.14.1",
+    "cookie-parser": "~1.4.3",
+    "body-parser": "~1.15.2"
   },
   "devDependencies": {
     "jasmine": "~2.5.2"
