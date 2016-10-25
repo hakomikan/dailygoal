@@ -13,15 +13,17 @@
     "passport-openidconnect": "0.0.1",
     "express-session": "~1.14.1",
     "cookie-parser": "~1.4.3",
-    "body-parser": "~1.15.2"
+    "body-parser": "~1.15.2",
+    "typescript": "~2.0.3",
+    "typings": "~1.4.0"
   },
   "devDependencies": {
     "jasmine": "~2.5.2"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "./node_modules/.bin/tsc && node index.js",
     "test": "jasmine",
-    "postinstall": "bower install"
+    "postinstall": "bower install && typings install"
   },
   "repository": {
     "type": "git",
