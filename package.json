@@ -23,7 +23,7 @@
   "scripts": {
     "start": "./node_modules/.bin/tsc && node index.js",
     "test": "jasmine",
-    "postinstall": "bower install && typings install"
+    "postinstall": "bower install && typings install && ./node_modules/.bin/tsc"
   },
   "repository": {
     "type": "git",
