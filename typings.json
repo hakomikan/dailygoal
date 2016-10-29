@@ -15,6 +15,8 @@
     "node": "registry:dt/node#6.0.0+20161019125345",
     "passport": "registry:dt/passport#0.2.0+20161013124703",
     "pug": "registry:dt/pug#2.0.0-beta6+20160919072324",
-    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157"
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+    "superagent": "registry:dt/superagent#2.0.0+20160906143408",
+    "supertest": "registry:dt/supertest#1.1.0+20160724070541"
   }
 }

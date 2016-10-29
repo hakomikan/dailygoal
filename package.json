@@ -18,11 +18,12 @@
     "typings": "~1.4.0"
   },
   "devDependencies": {
-    "jasmine": "~2.5.2"
+    "jasmine": "~2.5.2",
+    "supertest": "~2.0.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/tsc && node index.js",
-    "test": "jasmine",
+    "test": "./node_modules/.bin/tsc && jasmine",
     "postinstall": "bower install && typings install && ./node_modules/.bin/tsc"
   },
   "repository": {
