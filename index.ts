@@ -7,6 +7,8 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
+import {CrudApplication} from './libs/CrudApplication';
+import {DailyGoalApplication} from './apps/DailyGoal';
 
 var app = express();
 
@@ -16,6 +18,10 @@ app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+if (app.get('env') === 'development') {
+  app.locals.pretty = true;
+}
 
 var OpenidConnectStrategy = require('passport-openidconnect').Strategy;
 app.use(session({ resave:false, saveUninitialized:false, secret: 'sadfasdfas' }));
@@ -103,6 +109,9 @@ app.get('/', ensureAuthenticated, function (req, res) {
     res.render('index', {items: docs, user: req.user.name});
   });
 });
+
+var dailyGoalApplication = new CrudApplication(DailyGoalApplication);
+dailyGoalApplication.Join(app);
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));

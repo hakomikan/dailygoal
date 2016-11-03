@@ -20,7 +20,9 @@ export class CrudApplication
       res.render('crud/list',
         {
           title: this.definition.name,
-          items: []
+          items: [],
+          createurl: this.definition.url + "/create",
+          properties: this.definition.properties,
         });
     });
 

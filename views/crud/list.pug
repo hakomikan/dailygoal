@@ -5,3 +5,8 @@ block content
     ul
         each goal in items
             li #{goal.subject}
+    form(action=createurl, method='POST')
+        each property in properties
+            input(type='text', placeholder=property.description, name=property.name)
+        button(type="submit") Add
+
