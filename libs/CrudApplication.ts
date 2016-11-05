@@ -30,6 +30,7 @@ export class CrudApplication
             title: self.definition.name,
             items: docs,
             createurl: self.definition.url + "/create",
+            deleteurl: (id) => self.definition.url + "/" + id + "/delete",
             properties: self.definition.properties,
           });
       });
@@ -51,8 +52,8 @@ export class CrudApplication
       
     });
 
-    router.post("/:id/delete", (req, res) => {
-
+    router.get("/:id/delete", (req, res) => {
+      res.redirect(self.definition.url + "/");
     });
 
     router.post("/:id/update", (req, res) => {

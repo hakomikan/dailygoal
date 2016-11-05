@@ -4,7 +4,10 @@ block content
     h1 #{title}
     ul
         each goal in items
-            li #{goal.subject}
+            li
+                span #{goal.subject}
+                a(href=deleteurl(goal._id))
+                    span(class="glyphicon glyphicon-remove")
     form(action=createurl, method='POST')
         each property in properties
             input(type='text', placeholder=property.description, name=property.name)
