@@ -22,9 +22,6 @@ export class CrudApplication
 
     router.get("/", (req,res) => {
       self.model.find({}, function(err, docs: any[]) {
-        docs.forEach(element => {
-          console.log(element.subject);
-        });
         res.render('crud/list',
           {
             title: self.definition.name,
@@ -51,7 +48,6 @@ export class CrudApplication
 
     router.get("/:id/edit", (req, res) => {
       self.model.findOne({_id: req.params.id}, (err, doc: any) => {
-        console.log(doc.subject);
         res.render('crud/edit',
           {
             title: self.definition.name,
