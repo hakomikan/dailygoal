@@ -49,11 +49,16 @@ export class CrudApplication
     });
 
     router.get("/:id", (req, res) => {
-      
     });
 
     router.get("/:id/delete", (req, res) => {
-      res.redirect(self.definition.url + "/");
+      self.model.remove({ _id: req.params.id }, (err) => {
+        if(err) {
+          console.log("remove error: " + err);
+        }
+        
+        res.redirect(self.definition.url + "/");
+      });
     });
 
     router.post("/:id/update", (req, res) => {
