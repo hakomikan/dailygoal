@@ -1,0 +1,10 @@
+extends ../layout.pug
+
+block content
+    h1 #{title}
+    form(action=updateurl(item._id), method='POST')
+        each property in properties
+            input(type='text', placeholder=property.description, name=property.name, value=item.subject)
+        input(type='hidden', name="_id", value=item._id)
+        button(type="submit" class="btn btn-primary") Update
+        a(class="btn btn-default", href=listurl) Cancel

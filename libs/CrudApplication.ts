@@ -31,6 +31,7 @@ export class CrudApplication
             items: docs,
             createurl: self.definition.url + "/create",
             deleteurl: (id) => self.definition.url + "/" + id + "/delete",
+            editurl: (id) => self.definition.url + "/" + id + "/edit",
             properties: self.definition.properties,
           });
       });
@@ -48,7 +49,30 @@ export class CrudApplication
       });
     });
 
-    router.get("/:id", (req, res) => {
+    router.get("/:id/edit", (req, res) => {
+      self.model.findOne({_id: req.params.id}, (err, doc: any) => {
+        console.log(doc.subject);
+        res.render('crud/edit',
+          {
+            title: self.definition.name,
+            item: doc,
+            createurl: self.definition.url + "/create",
+            deleteurl: (id) => self.definition.url + "/" + id + "/delete",
+            updateurl: (id) => self.definition.url + "/" + id + "/update",
+            listurl: self.definition.url + "/",
+            properties: self.definition.properties,
+          });
+      });
+    });
+
+    router.post("/:id/update", (req, res) => {
+      self.model.findOneAndUpdate({ _id: req.params.id }, req.body, (err, doc) => {
+        if(err) {
+          console.log("remove error: " + err);
+        }
+        
+        res.redirect(self.definition.url + "/");
+      });
     });
 
     router.get("/:id/delete", (req, res) => {
