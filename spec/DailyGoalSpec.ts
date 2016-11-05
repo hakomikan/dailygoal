@@ -11,7 +11,7 @@ import {DailyGoalApplication, DailyGoal} from '../apps/DailyGoal';
 import * as Database from "../libs/Database";
 
 var app : express.Application = null;
-Database.Initialize();
+Database.Initialize('mongodb://localhost/dailygoal-test');
 
 describe("DailyGoalApplication", () => {
   beforeAll( (done) => {

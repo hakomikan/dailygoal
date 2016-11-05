@@ -1,8 +1,7 @@
 import * as mongoose from "mongoose"
 
-export function Initialize()
+export function Initialize(uristring : string = process.env.MONGODB_URI || 'mongodb://localhost/dailygoal')
 {
-  var uristring = process.env.MONGODB_URI || 'mongodb://localhost/dailygoal'
   mongoose.connect(uristring,
     function (err, res) {
       if (err) {
