@@ -18,15 +18,18 @@ export class CrudApplication
 
   MakeRouter() : express.Router {
     var router = express.Router();
+    var self = this;
 
     router.get("/", (req,res) => {
-      res.render('crud/list',
-        {
-          title: this.definition.name,
-          items: [],
-          createurl: this.definition.url + "/create",
-          properties: this.definition.properties,
-        });
+      self.model.find({}, function(err, docs: any[]) {
+        res.render('crud/list',
+          {
+            title: self.definition.name,
+            items: docs,
+            createurl: self.definition.url + "/create",
+            properties: self.definition.properties,
+          });
+      });
     });
 
     router.post("/create", (req, res) => {
