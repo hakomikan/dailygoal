@@ -6,6 +6,7 @@ var path = require("path");
 var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
+var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 import {CrudApplication} from './libs/CrudApplication';
 import {DailyGoalApplication, DailyGoal} from './apps/DailyGoal';
@@ -16,7 +17,7 @@ var app = express();
 app.set('port', (process.env.PORT || 3000));
 
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
-
+app.use(bodyParser.urlencoded({extended: true}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 

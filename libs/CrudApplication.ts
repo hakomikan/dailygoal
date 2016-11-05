@@ -22,6 +22,9 @@ export class CrudApplication
 
     router.get("/", (req,res) => {
       self.model.find({}, function(err, docs: any[]) {
+        docs.forEach(element => {
+          console.log(element.subject);
+        });
         res.render('crud/list',
           {
             title: self.definition.name,
@@ -33,6 +36,15 @@ export class CrudApplication
     });
 
     router.post("/create", (req, res) => {
+      console.log("Add:", req.body);
+
+      self.model.create(req.body, (err, doc)=>{
+        if(err) {
+          console.log("create error: " + err);
+        }
+
+        res.redirect(self.definition.url + "/");
+      });
     });
 
     router.get("/:id", (req, res) => {
