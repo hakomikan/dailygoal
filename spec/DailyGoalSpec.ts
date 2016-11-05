@@ -7,9 +7,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as pug  from 'pug';
 import {CrudApplication} from '../libs/CrudApplication';
-import {DailyGoalApplication} from '../apps/DailyGoal';
+import {DailyGoalApplication, DailyGoal} from '../apps/DailyGoal';
+import * as Database from "../libs/Database";
 
 var app : express.Application = null;
+Database.Initialize();
 
 describe("DailyGoalApplication", () => {
   beforeAll( (done) => {
@@ -20,7 +22,7 @@ describe("DailyGoalApplication", () => {
   });
 
   it("should access to app root", (done) => {
-    var dailyGoalApplication = new CrudApplication(DailyGoalApplication);
+    var dailyGoalApplication = new CrudApplication(DailyGoalApplication, DailyGoal);
     dailyGoalApplication.Join(app);
 
     request(app)

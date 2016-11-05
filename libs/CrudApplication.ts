@@ -4,13 +4,16 @@ import * as mongodb from 'mongodb';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as pug  from 'pug';
+import * as mongoose from "mongoose";
 
 export class CrudApplication
 {
   definition : any;
+  model: mongoose.Model<mongoose.Document>;
 
-  constructor(applicationDefinition) {
+  constructor(applicationDefinition: any, mongooseModel: mongoose.Model<mongoose.Document>) {
     this.definition = applicationDefinition;
+    this.model = mongooseModel;
   }
 
   MakeRouter() : express.Router {

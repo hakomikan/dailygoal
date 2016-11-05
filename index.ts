@@ -8,7 +8,8 @@ var passport = require('passport');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 import {CrudApplication} from './libs/CrudApplication';
-import {DailyGoalApplication} from './apps/DailyGoal';
+import {DailyGoalApplication, DailyGoal} from './apps/DailyGoal';
+import * as Database from "./libs/Database";
 
 var app = express();
 
@@ -73,24 +74,6 @@ var ensureAuthenticated = function(req, res, next){
     res.redirect("/login");
 };
 
-var DailyGoalSchema = new mongoose.Schema({
-  subject: String,
-});
-mongoose.model('DailyGoal', DailyGoalSchema);
-
-var uristring = process.env.MONGODB_URI || 'mongodb://localhost/dailygoal'
-mongoose.connect(uristring,
-  function (err, res) {
-    if (err) {
-      console.log ('ERROR connecting to: ' + uristring + '. ' + err);
-    } else {
-      console.log ('Succeeded connected to: ' + uristring);
-    }
-  }
-);
-
-var DailyGoal = mongoose.model('DailyGoal');
-
 app.get('/login', function (req, res){
   if(req.isAuthenticated()) {
     res.redirect('/')
@@ -101,7 +84,7 @@ app.get('/login', function (req, res){
 });
 
 app.get('/', ensureAuthenticated, function (req, res) {
-  DailyGoal.find({}, function(err, docs) {
+  DailyGoal.find({}, function(err, docs: any[]) {
     for (var i=0, size=docs.length; i<size; ++i) {
       console.log(docs[i].subject);
     }
@@ -110,9 +93,10 @@ app.get('/', ensureAuthenticated, function (req, res) {
   });
 });
 
-var dailyGoalApplication = new CrudApplication(DailyGoalApplication);
+var dailyGoalApplication = new CrudApplication(DailyGoalApplication, DailyGoal);
 dailyGoalApplication.Join(app);
 
 app.listen(app.get('port'), function() {
+  Database.Initialize();
   console.log('Node app is running on port', app.get('port'));
 });
