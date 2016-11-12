@@ -9,7 +9,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 import {CrudApplication} from './libs/CrudApplication';
-import {DailyGoalApplication, DailyGoal} from './apps/DailyGoal';
+import {DailyGoalApplication} from './apps/DailyGoal';
 import * as Database from "./libs/Database";
 
 var app = express();
@@ -84,8 +84,11 @@ app.get('/login', function (req, res){
   }
 });
 
+var dailyGoalApplication = new CrudApplication(DailyGoalApplication);
+dailyGoalApplication.Join(app);
+
 app.get('/', ensureAuthenticated, function (req, res) {
-  DailyGoal.find({}, function(err, docs: any[]) {
+  dailyGoalApplication.model.find({}, function(err, docs: any[]) {
     for (var i=0, size=docs.length; i<size; ++i) {
       console.log(docs[i].subject);
     }
@@ -93,9 +96,6 @@ app.get('/', ensureAuthenticated, function (req, res) {
     res.render('index', {items: docs, user: req.user.name});
   });
 });
-
-var dailyGoalApplication = new CrudApplication(DailyGoalApplication, DailyGoal);
-dailyGoalApplication.Join(app);
 
 app.listen(app.get('port'), function() {
   Database.Initialize();

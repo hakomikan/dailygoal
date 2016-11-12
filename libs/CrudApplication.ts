@@ -11,9 +11,10 @@ export class CrudApplication
   definition : any;
   model: mongoose.Model<mongoose.Document>;
 
-  constructor(applicationDefinition: any, mongooseModel: mongoose.Model<mongoose.Document>) {
+  constructor(applicationDefinition: any) {
     this.definition = applicationDefinition;
-    this.model = mongooseModel;
+    mongoose.model(this.definition.name, this.definition.schema);
+    this.model = mongoose.model(this.definition.name);
   }
 
   MakeRouter() : express.Router {
