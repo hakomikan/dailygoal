@@ -84,17 +84,11 @@ app.get('/login', function (req, res){
   }
 });
 
-var dailyGoalApplication = new CrudApplication(DailyGoalApplication);
+var dailyGoalApplication = new CrudApplication(DailyGoalApplication, ensureAuthenticated);
 dailyGoalApplication.Join(app);
 
 app.get('/', ensureAuthenticated, function (req, res) {
-  dailyGoalApplication.model.find({}, function(err, docs: any[]) {
-    for (var i=0, size=docs.length; i<size; ++i) {
-      console.log(docs[i].subject);
-    }
-    console.log("user: "+req.user.displayName);
-    res.render('index', {items: docs, user: req.user.name});
-  });
+  res.redirect('/DailyGoal');
 });
 
 app.listen(app.get('port'), function() {

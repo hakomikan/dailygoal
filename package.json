@@ -15,13 +15,16 @@
     "cookie-parser": "~1.4.3",
     "body-parser": "~1.15.2",
     "typescript": "~2.0.3",
-    "typings": "~1.4.0"
+    "typings": "~1.4.0",
+    "concurrently": "~3.1.0"
   },
   "devDependencies": {
     "jasmine": "~2.5.2",
-    "supertest": "~2.0.1"
+    "supertest": "~2.0.1",
+    "node-inspector": "~0.12.8"
   },
   "scripts": {
+    "debug": "./node_modules/.bin/tsc && concurrently -k 'node-inspector --web-port 3001' 'node --debug index.js'",
     "start": "./node_modules/.bin/tsc && node index.js",
     "test": "./node_modules/.bin/tsc && jasmine",
     "postinstall": "bower install && typings install && ./node_modules/.bin/tsc"

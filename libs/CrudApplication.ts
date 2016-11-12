@@ -10,19 +10,25 @@ export class CrudApplication
 {
   definition : any;
   model: mongoose.Model<mongoose.Document>;
+  authenticator: any;
 
-  constructor(applicationDefinition: any) {
+  constructor(applicationDefinition: any, authenticator: any = (req, res, next) => { next(); } ) {
     this.definition = applicationDefinition;
     mongoose.model(this.definition.name, this.definition.schema);
     this.model = mongoose.model(this.definition.name);
+    this.authenticator = authenticator;
+  }
+
+  GetUserId(req: any) : String {
+    return req.session.passport.user._json.id;
   }
 
   MakeRouter() : express.Router {
     var router = express.Router();
     var self = this;
 
-    router.get("/", (req,res) => {
-      self.model.find({}, function(err, docs: any[]) {
+    router.get("/", this.authenticator, (req,res) => {
+      self.model.find({owner_id: this.GetUserId(req)}, function(err, docs: any[]) {
         res.render('crud/list',
           {
             title: self.definition.name,
@@ -35,9 +41,10 @@ export class CrudApplication
       });
     });
 
-    router.post("/create", (req, res) => {
+    router.post("/create", this.authenticator, (req, res) => {
+      var session: any = req.session;
+      req.body.owner_id = this.GetUserId(req);
       console.log("Add:", req.body);
-
       self.model.create(req.body, (err, doc)=>{
         if(err) {
           console.log("create error: " + err);
@@ -47,8 +54,8 @@ export class CrudApplication
       });
     });
 
-    router.get("/:id/edit", (req, res) => {
-      self.model.findOne({_id: req.params.id}, (err, doc: any) => {
+    router.get("/:id/edit", this.authenticator, (req, res) => {
+      self.model.findOne({_id: req.params.id, owner_id: this.GetUserId(req)}, (err, doc: any) => {
         res.render('crud/edit',
           {
             title: self.definition.name,
@@ -62,8 +69,8 @@ export class CrudApplication
       });
     });
 
-    router.post("/:id/update", (req, res) => {
-      self.model.findOneAndUpdate({ _id: req.params.id }, req.body, (err, doc) => {
+    router.post("/:id/update", this.authenticator, (req, res) => {
+      self.model.findOneAndUpdate({ _id: req.params.id, owner_id: this.GetUserId(req)}, req.body, (err, doc) => {
         if(err) {
           console.log("remove error: " + err);
         }
@@ -72,8 +79,8 @@ export class CrudApplication
       });
     });
 
-    router.get("/:id/delete", (req, res) => {
-      self.model.remove({ _id: req.params.id }, (err) => {
+    router.get("/:id/delete", this.authenticator, (req, res) => {
+      self.model.remove({ _id: req.params.id, owner_id: this.GetUserId(req)}, (err) => {
         if(err) {
           console.log("remove error: " + err);
         }
@@ -81,9 +88,6 @@ export class CrudApplication
         res.redirect(self.definition.url + "/");
       });
     });
-
-    router.post("/:id/update", (req, res) => {
-    })
 
     return router;
   }
