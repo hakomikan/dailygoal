@@ -3,12 +3,12 @@ extends ../layout.pug
 block content
     h1 #{title}
     ul
-        each goal in items
+        each item in items
             li
-                span #{goal.subject}
-                a(href=editurl(goal._id))
+                span #{item.subject}
+                a(href=editurl(item._id))
                     span(class="glyphicon glyphicon-edit")
-                a(href=deleteurl(goal._id))
+                a(href=deleteurl(item._id))
                     span(class="glyphicon glyphicon-remove")
     form(action=createurl, method='POST')
         each property in properties
