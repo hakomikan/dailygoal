@@ -40,3 +40,5 @@ bower_components
 *.js
 
 typings
+
+.vagrant
