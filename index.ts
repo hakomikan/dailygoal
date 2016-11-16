@@ -68,12 +68,24 @@ app.get('/oauth2callback',
   }
 );
 
-var ensureAuthenticated = function(req, res, next){
+function EnsureAuthenticated(req, res, next) {
     console.log(req.isAuthenticated());
     if(req.isAuthenticated())
         return next();
     res.redirect("/login");
 };
+
+function GetUserId(req: any) : String {
+  return req.session.passport.user._json.id;
+}
+
+function MakeAuthenticator()
+{
+  return {
+    EnsureLogined: EnsureAuthenticated,
+    GetUserId: GetUserId,
+  };
+}
 
 app.get('/login', function (req, res){
   if(req.isAuthenticated()) {
@@ -84,10 +96,10 @@ app.get('/login', function (req, res){
   }
 });
 
-var dailyGoalApplication = new CrudApplication(DailyGoalApplication, ensureAuthenticated);
+var dailyGoalApplication = new CrudApplication(DailyGoalApplication, MakeAuthenticator());
 dailyGoalApplication.Join(app);
 
-app.get('/', ensureAuthenticated, function (req, res) {
+app.get('/', EnsureAuthenticated, function (req, res) {
   res.redirect('/DailyGoal');
 });
 
