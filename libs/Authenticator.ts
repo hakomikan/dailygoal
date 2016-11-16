@@ -7,7 +7,6 @@ export interface Authenticator
 export class OpenIdConnectAuthenticator implements Authenticator
 {
   EnsureAuthenticated(req, res, next) : any {
-    console.log(req.isAuthenticated());
     if(req.isAuthenticated())
         return next();
     res.redirect("/login");
