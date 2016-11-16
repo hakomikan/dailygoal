@@ -30,6 +30,9 @@ Vagrant::configure("2") do |config|
             sudo apt-get install -y git zsh whois nodejs emacs lv bindfs
             sudo apt-get install -y mongodb-org=3.2.9 mongodb-org-server=3.2.9 mongodb-org-shell=3.2.9 mongodb-org-mongos=3.2.9 mongodb-org-tools=3.2.9
             wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+
+            wget -O- https://bootstrap.pypa.io/get-pip.py | sudo python
+            pip install percol
         SHELL
 
     config.vm.provision "export env",
