@@ -4,13 +4,15 @@ var express = require('express');
 var pug = require('pug');
 var path = require("path"); 
 var mongoose = require('mongoose');
-var passport = require('passport');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 import {CrudApplication} from './libs/CrudApplication';
 import {DailyGoalApplication} from './apps/DailyGoal';
 import * as Database from "./libs/Database";
+import {Authenticator, OpenIdConnectAuthenticator} from "./libs/Authenticator";
+import {Application} from "express";
+import {PrepareOpenIdConnect} from "./libs/OpenIdConnect";
 
 var app = express();
 
@@ -25,81 +27,13 @@ if (app.get('env') === 'development') {
   app.locals.pretty = true;
 }
 
-var OpenidConnectStrategy = require('passport-openidconnect').Strategy;
-app.use(session({ resave:false, saveUninitialized:false, secret: 'sadfasdfas' }));
-app.use(passport.initialize());
-app.use(passport.session());
+PrepareOpenIdConnect(app);
 
-passport.use(new OpenidConnectStrategy({
-    authorizationURL: "https://accounts.google.com/o/oauth2/auth",
-    tokenURL: "https://accounts.google.com/o/oauth2/token",
-    userInfoURL: "https://www.googleapis.com/oauth2/v1/userinfo",
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "/oauth2callback",
-    scope: ["openid", "email", "profile" ]
-}, function(accessToken, refreshToken, profile, done) {
-    console.log('accessToken: ', accessToken);
-    console.log('refreshToken: ', refreshToken);
-    console.log('profile: ', profile);
-    return done(null, profile);
-}));
-
-passport.serializeUser(function(user, done){
-    done(null, user);
-});
-
-passport.deserializeUser(function(obj, done){
-    done(null, obj);
-});
-
-app.get('/auth/google', passport.authenticate('openidconnect'));
-
-app.get('/oauth2callback',
-  passport.authenticate(
-    'openidconnect',
-    {
-      failureRedirect: '/login',
-    }
-  ),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  }
-);
-
-function EnsureAuthenticated(req, res, next) {
-    console.log(req.isAuthenticated());
-    if(req.isAuthenticated())
-        return next();
-    res.redirect("/login");
-};
-
-function GetUserId(req: any) : String {
-  return req.session.passport.user._json.id;
-}
-
-function MakeAuthenticator()
-{
-  return {
-    EnsureLogined: EnsureAuthenticated,
-    GetUserId: GetUserId,
-  };
-}
-
-app.get('/login', function (req, res){
-  if(req.isAuthenticated()) {
-    res.redirect('/')
-  }
-  else {
-    res.render('login');
-  }
-});
-
-var dailyGoalApplication = new CrudApplication(DailyGoalApplication, MakeAuthenticator());
+var authenticator = new OpenIdConnectAuthenticator();
+var dailyGoalApplication = new CrudApplication(DailyGoalApplication, authenticator);
 dailyGoalApplication.Join(app);
 
-app.get('/', EnsureAuthenticated, function (req, res) {
+app.get('/', authenticator.EnsureAuthenticated, function (req, res) {
   res.redirect('/DailyGoal');
 });
 

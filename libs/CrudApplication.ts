@@ -5,22 +5,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as pug  from 'pug';
 import * as mongoose from "mongoose";
-
-function MakeNullAuthenticator()
-{
-  return {
-    EnsureLogined: (req, res, next) => { next(); },
-    GetUserId: (req:any) => null,
-  };
-}
+import {Authenticator, PseudoAuthenticator} from "./Authenticator";
 
 export class CrudApplication
 {
   definition : any;
   model: mongoose.Model<mongoose.Document>;
-  authenticator: any;
+  authenticator: Authenticator;
 
-  constructor(applicationDefinition: any, authenticator: any = MakeNullAuthenticator() ) {
+  constructor(applicationDefinition: any, authenticator: Authenticator = new PseudoAuthenticator() ) {
     this.definition = applicationDefinition;
     mongoose.model(this.definition.name, this.definition.schema);
     this.model = mongoose.model(this.definition.name);
@@ -35,7 +28,7 @@ export class CrudApplication
     var router = express.Router();
     var self = this;
 
-    router.get("/", this.authenticator.EnsureLogined, (req,res) => {
+    router.get("/", this.authenticator.EnsureAuthenticated, (req,res) => {
       self.model.find({owner_id: this.GetUserId(req)}, function(err, docs: any[]) {
         res.render('crud/list',
           {
@@ -49,7 +42,7 @@ export class CrudApplication
       });
     });
 
-    router.post("/create", this.authenticator.EnsureLogined, (req, res) => {
+    router.post("/create", this.authenticator.EnsureAuthenticated, (req, res) => {
       var session: any = req.session;
       req.body.owner_id = this.GetUserId(req);
       console.log("Add:", req.body);
@@ -62,7 +55,7 @@ export class CrudApplication
       });
     });
 
-    router.get("/:id/edit", this.authenticator.EnsureLogined, (req, res) => {
+    router.get("/:id/edit", this.authenticator.EnsureAuthenticated, (req, res) => {
       self.model.findOne({_id: req.params.id, owner_id: this.GetUserId(req)}, (err, doc: any) => {
         res.render('crud/edit',
           {
@@ -77,7 +70,7 @@ export class CrudApplication
       });
     });
 
-    router.post("/:id/update", this.authenticator.EnsureLogined, (req, res) => {
+    router.post("/:id/update", this.authenticator.EnsureAuthenticated, (req, res) => {
       self.model.findOneAndUpdate({ _id: req.params.id, owner_id: this.GetUserId(req)}, req.body, (err, doc) => {
         if(err) {
           console.log("remove error: " + err);
@@ -87,7 +80,7 @@ export class CrudApplication
       });
     });
 
-    router.get("/:id/delete", this.authenticator.EnsureLogined, (req, res) => {
+    router.get("/:id/delete", this.authenticator.EnsureAuthenticated, (req, res) => {
       self.model.remove({ _id: req.params.id, owner_id: this.GetUserId(req)}, (err) => {
         if(err) {
           console.log("remove error: " + err);
