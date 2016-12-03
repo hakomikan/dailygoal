@@ -11,8 +11,9 @@ import {CrudApplication} from './libs/CrudApplication';
 import {DailyGoalApplication} from './apps/DailyGoal';
 import * as Database from "./libs/Database";
 import {Authenticator, OpenIdConnectAuthenticator} from "./libs/Authenticator";
-import {Application} from "express";
+import {Application, Request, Response} from "express";
 import {PrepareOpenIdConnect} from "./libs/OpenIdConnect";
+import {DoneRecordApplication} from "./apps/DoneRecord";
 
 var app = express();
 
@@ -30,11 +31,27 @@ if (app.get('env') === 'development') {
 PrepareOpenIdConnect(app);
 
 var authenticator = new OpenIdConnectAuthenticator();
+var EnsureAuthenticated = authenticator.EnsureAuthenticated;
+
 var dailyGoalApplication = new CrudApplication(DailyGoalApplication, authenticator);
 dailyGoalApplication.Join(app);
 
-app.get('/', authenticator.EnsureAuthenticated, function (req, res) {
+var doneRecordApplication = new CrudApplication(DoneRecordApplication, authenticator);
+doneRecordApplication.Join(app);
+
+app.get('/', EnsureAuthenticated, function (req, res) {
   res.redirect('/DailyGoal');
+});
+
+app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', (req: Request, res: Response) => {
+  dailyGoalApplication.model.find((err, doc) => {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      res.render("date", {date: req.params.date, items: doc});
+    }
+  });
 });
 
 app.listen(app.get('port'), function() {

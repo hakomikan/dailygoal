@@ -4,12 +4,20 @@ block content
     h1 #{title}
     ul
         each item in items
-            li
-                span #{item.subject}
-                a(href=editurl(item._id))
-                    span(class="glyphicon glyphicon-edit")
-                a(href=deleteurl(item._id))
-                    span(class="glyphicon glyphicon-remove")
+            li #{item._id}
+                ul
+                    each property in properties
+                        li
+                            b #{property.name}: 
+                            span #{item[property.name]}
+                    li
+                        a(href=editurl(item._id))
+                            span(class="glyphicon glyphicon-edit")
+                            span Edit
+                    li
+                        a(href=deleteurl(item._id))
+                            span(class="glyphicon glyphicon-remove")
+                            span Delete
     form(action=createurl, method='POST')
         each property in properties
             input(type='text', placeholder=property.description, name=property.name)

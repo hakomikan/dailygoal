@@ -14,5 +14,8 @@ export var DailyGoalApplication : any = {
       name: "subject",
       description: "DailyGoal"
     }
-  ]
+  ],
+  summary: {
+    columns: ["subject"]
+  }
 };

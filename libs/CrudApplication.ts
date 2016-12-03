@@ -15,9 +15,14 @@ export class CrudApplication
 
   constructor(applicationDefinition: any, authenticator: Authenticator = new PseudoAuthenticator() ) {
     this.definition = applicationDefinition;
-    mongoose.model(this.definition.name, this.definition.schema);
-    this.model = mongoose.model(this.definition.name);
+    this.model = CrudApplication.RegisterModel(this.definition);
     this.authenticator = authenticator;
+  }
+
+  static RegisterModel(appDefs: any) : mongoose.Model<mongoose.Document>
+  {
+    mongoose.model(appDefs.name, appDefs.schema);
+    return mongoose.model(appDefs.name);
   }
 
   GetUserId(req: any) : String {
@@ -29,7 +34,7 @@ export class CrudApplication
     var self = this;
 
     router.get("/", this.authenticator.EnsureAuthenticated, (req,res) => {
-      self.model.find({owner_id: this.GetUserId(req)}, function(err, docs: any[]) {
+      self.model.find({/*owner_id: this.GetUserId(req)*/}, function(err, docs: any[]) {
         res.render('crud/list',
           {
             title: self.definition.name,

@@ -1,0 +1,10 @@
+extends ./layout.pug
+
+block content
+    h1 #{date}
+    ul
+        each goal in items
+            div
+                a(href="")
+                    i(class="cr-icon glyphicon glyphicon-unchecked")
+                    span #{goal.subject}

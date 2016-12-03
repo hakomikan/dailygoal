@@ -9,16 +9,30 @@ import * as pug  from 'pug';
 import {CrudApplication} from '../libs/CrudApplication';
 import {DailyGoalApplication} from '../apps/DailyGoal';
 import * as Database from "../libs/Database";
+import * as mongoose from 'mongoose';
 
 var app : express.Application = null;
-Database.Initialize('mongodb://localhost/dailygoal-test');
 
 describe("DailyGoalApplication", () => {
   beforeAll( (done) => {
+    Database.Initialize('mongodb://localhost/dailygoal-test', {withDropAll: true})
+    .catch((err)=>{
+      done.fail(err);
+    });
     app = express();
     app.set('views', path.join(__dirname, '../views'));
     app.set('view engine', 'pug');
     done();
+  });
+
+  afterAll((done) => {
+    Database.Finalize()
+    .then(()=>{
+      done();
+    })
+    .catch((err)=>{
+      done.fail(err);
+    });
   });
 
   it("should access to app root", (done) => {

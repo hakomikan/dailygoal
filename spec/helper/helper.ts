@@ -11,6 +11,18 @@ export function finish_test (done: any) {
   }
 }
 
+export function WrapAsync(promise: () => Promise<void>) : (DoneFn) => void {
+  return done => {
+    promise()
+    .then(() => {
+      done();
+    })
+    .catch(err=>{
+      done.fail(err);
+    });
+  };
+}
+
 export function make_app(router: express.Router, appdecorator = (app) => {}) {
   var app = express();
   appdecorator(app);
