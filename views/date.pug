@@ -5,6 +5,11 @@ block content
     ul
         each goal in items
             div
-                a(href="")
-                    i(class="cr-icon glyphicon glyphicon-unchecked")
-                    span #{goal.subject}
+                if goal.records.length != 0
+                    a(href=url_uncheck(goal))
+                        i(class="cr-icon glyphicon glyphicon-check")
+                        span #{goal.subject}
+                else
+                    a(href=url_check(goal))
+                        i(class="cr-icon glyphicon glyphicon-unchecked")
+                        span #{goal.subject}

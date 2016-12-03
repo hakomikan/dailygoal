@@ -1,12 +1,5 @@
 /// <reference path="../typings/index.d.ts" />
-import * as request from "supertest";
-import * as express from "express";
 import {WrapAsync} from "./helper/helper";
-import * as mongodb from 'mongodb';
-import * as mongoose from 'mongoose';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as pug  from 'pug';
 import {CrudApplication} from '../libs/CrudApplication';
 import {DailyGoalApplication} from '../apps/DailyGoal';
 import {DoneRecordApplication, DoneRecordEntry} from '../apps/DoneRecord';
@@ -32,6 +25,9 @@ describe("DoneRecord", () => {
     expect(await doneRecordModel.count({})).toBe(1);
 
     let populated: any = await doneRecordModel.find().populate("goal").findOne();
-    expect(populated.goal.subject).toBe("test subject");
+    expect(populated.goal.subject).toEqual("test subject");
+
+    let populated2: any = await dailyGoalModel.find().populate("records").findOne();
+    expect(populated2.records[0].date).toEqual(new Date("2016-12-03"));
   }));
 });

@@ -1,9 +1,9 @@
 import * as mongoose from "mongoose";
 
-export var DoneRecordSchema : any = {
+export var DoneRecordSchema : mongoose.Schema = new mongoose.Schema({
   goal: { type: mongoose.Schema.Types.ObjectId, ref: 'DailyGoal' },
   date: Date
-};
+});
 
 export type DoneRecordEntry = {goal: mongoose.Schema.Types.ObjectId, date: Date};
 

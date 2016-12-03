@@ -43,16 +43,38 @@ app.get('/', EnsureAuthenticated, function (req, res) {
   res.redirect('/DailyGoal');
 });
 
-app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', (req: Request, res: Response) => {
-  dailyGoalApplication.model.find((err, doc) => {
-    if(err) {
-      console.log(err);
-    }
-    else {
-      res.render("date", {date: req.params.date, items: doc});
-    }
+function WrapRoute(processor: (req: Request, res: Response) => Promise<void>) : (Request, Response) => void
+{
+  return (req, res) => {
+    processor(req, res)
+    .catch(err => {
+      console.log(`ERROR: ${err}`);
+    });
+  }
+}
+
+app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', WrapRoute(async (req, res) => {
+  let goals = await dailyGoalApplication.model.find().populate("records")
+  res.render("date", {
+    date: req.params.date,
+    items: goals,
+    url_check: goal => `${req.url}/${goal._id}/check`,
+    url_uncheck: goal => `${req.url}/${goal._id}/uncheck`
   });
-});
+}));
+
+app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', WrapRoute(async (req, res) => {
+  let hasGoal = 0 < await doneRecordApplication.model.count({goal: req.params.goal_id, date: new Date(req.params.date)});
+  if(!hasGoal) {
+    await new doneRecordApplication.model({goal: req.params.goal_id, date: new Date(req.params.date)}).save();
+  }
+  res.redirect(`/${req.params.date}`);
+}));
+
+app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/uncheck', WrapRoute(async (req, res) => {
+  await doneRecordApplication.model.remove({goal: req.params.goal_id, date: new Date(req.params.date)});
+  res.redirect(`/${req.params.date}`);  
+}));
 
 app.listen(app.get('port'), function() {
   Database.Initialize();
