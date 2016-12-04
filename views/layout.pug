@@ -10,6 +10,8 @@ html(lang="jp")
         script(src="/bower_components/jquery-ui/jquery-ui.js")
         script(src="/bower_components/bootstrap/dist/js/bootstrap.js")
         link(href="/bower_components/bootstrap/dist/css/bootstrap.css", rel="stylesheet")
+        script(src="https://unpkg.com/react@15/dist/react.js")
+        script(src="https://unpkg.com/react-dom@15/dist/react-dom.js")
     body
         .navbar.navbar-inverse.navbar(role='navigation')
             .container
@@ -27,4 +29,6 @@ html(lang="jp")
                         li
                             a(href="/DoneRecord") Record
         .container
+            div(id="main")
             block content
+        script(src="/dist/bundle.js")

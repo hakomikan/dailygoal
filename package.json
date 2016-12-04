@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.15.3",
     "body-parser": "^1.15.2",
     "bower": "^1.8.0",
     "cookie-parser": "^1.4.3",
@@ -14,18 +15,23 @@
     "passport": "^0.3.2",
     "passport-openidconnect": "0.0.1",
     "pug": "^2.0.0-beta6",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
     "typescript": "^2.0.9",
     "typings": "^2.0.0"
   },
   "devDependencies": {
     "jasmine": "^2.5.2",
-    "supertest": "^2.0.1"
+    "source-map-loader": "^0.1.5",
+    "supertest": "^2.0.1",
+    "ts-loader": "^1.2.2",
+    "webpack": "^1.13.3"
   },
   "scripts": {
-    "debug": "./node_modules/.bin/tsc && node --inspect index.js",
-    "start": "./node_modules/.bin/tsc && node index.js",
-    "test": "./node_modules/.bin/tsc && jasmine",
-    "postinstall": "bower install && typings install && ./node_modules/.bin/tsc"
+    "debug": "./node_modules/.bin/tsc && webpack && node --inspect index.js",
+    "start": "./node_modules/.bin/tsc && webpack && node index.js",
+    "test": "./node_modules/.bin/tsc && webpack && jasmine",
+    "postinstall": "bower install && typings install && ./node_modules/.bin/tsc && webpack"
   },
   "repository": {
     "type": "git",
