@@ -64,6 +64,11 @@ app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', WrapRoute(async (req, res) => {
   });
 }));
 
+app.get('/api/goals', WrapRoute(async(req,res)=>{
+  let goals = await dailyGoalApplication.model.find();
+  res.json(goals);
+}));
+
 app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', WrapRoute(async (req, res) => {
   let hasGoal = 0 < await doneRecordApplication.model.count({goal: req.params.goal_id, date: new Date(req.params.date)});
   if(!hasGoal) {

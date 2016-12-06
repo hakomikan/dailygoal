@@ -1,6 +1,7 @@
 {
   "name": "dailygoal",
   "dependencies": {
+    "material-ui": "registry:npm/material-ui#0.15.1+20160817172421",
     "react": "registry:npm/react#15.0.1+20160601175240",
     "react-dom": "registry:npm/react-dom#15.0.1+20160826174104"
   },
@@ -18,6 +19,7 @@
     "node": "registry:dt/node#6.0.0+20161019125345",
     "passport": "registry:dt/passport#0.2.0+20161013124703",
     "pug": "registry:dt/pug#2.0.0-beta6+20160919072324",
+    "react-tap-event-plugin": "registry:dt/react-tap-event-plugin#0.0.0+20160602142434",
     "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
     "superagent": "registry:dt/superagent#2.0.0+20160906143408",
     "supertest": "registry:dt/supertest#1.1.0+20160724070541"

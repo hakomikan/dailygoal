@@ -1,34 +1,53 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+var injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+import * as axios from "axios";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as mui from "material-ui";
+
+interface Goal {
+  _id: string;
+  subject: string;
+}
 
 interface IAppProps {
-  model : number;
 }
 
 interface IAppState {
-  items: number[];
+  goals: Goal[];
 }
 
 function GoalList(props) {
-  return <ul>{props.data.map(v=><li>{v}</li>)}</ul>;
+  return (
+    <div>
+      {props.goals.map(v=><div style={{paddingBottom: "1 em"}} key={v._id}><mui.Paper>{v.subject}</mui.Paper></div>)}
+    </div>);
 }
 
 class DailyGoalApp extends React.Component<IAppProps, IAppState> {
   constructor(props) {
     super(props);
-    this.state = {items: [1,2,3,4,5]};
+    this.state = {goals: []};
   }
 
   componentDidMount() {
-    this.setState(prevState => ({items: prevState.items.concat([1,2,3])}));
+    (async ()=>{
+      let goals = (await axios.get<Goal[]>("/api/goals")).data;
+      this.setState(prevState => ({goals: goals}));
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
   }
 
   render() {
-    return <GoalList data={this.state.items}/>;
+    return <GoalList goals={this.state.goals}/>;
   }
 }
 
 ReactDOM.render(
-  <DailyGoalApp/>,
+  <MuiThemeProvider>
+    <DailyGoalApp/>
+  </MuiThemeProvider>,
   document.getElementById("main")
 );
