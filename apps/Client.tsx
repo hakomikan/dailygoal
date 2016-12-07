@@ -18,10 +18,24 @@ interface IAppState {
   goals: Goal[];
 }
 
+function GoalItem(props: {goal: Goal}) {
+  return (
+    <p key={props.goal._id}>
+      <mui.Paper>{props.goal.subject}</mui.Paper>
+    </p>
+  );
+}
+
 function GoalList(props) {
   return (
     <div>
-      {props.goals.map(v=><div style={{paddingBottom: "1 em"}} key={v._id}><mui.Paper>{v.subject}</mui.Paper></div>)}
+      {props.goals.map(
+        v => (
+          <div style={{paddingBottom: "1 em"}} key={v._id}>
+            <mui.Paper>{v.subject}</mui.Paper>
+          </div>
+        )
+      )}
     </div>);
 }
 
