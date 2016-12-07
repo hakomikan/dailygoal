@@ -4,6 +4,7 @@ import * as axios from "axios";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as mui from "material-ui";
 import * as icons from "material-ui/svg-icons";
+import { Router, Route, Link, browserHistory } from "react-router";
 
 interface Goal {
   _id?: string;
@@ -119,6 +120,36 @@ function GoalList(props) {
     </div>);
 }
 
+function DailyGoalMenu(props){
+  return (
+    <mui.Drawer
+      docked={true}
+      width={200}
+      open={true}
+    >
+      <mui.AppBar title="daily goal"/>
+      <mui.List defaultValue={1}>
+        <mui.ListItem primaryText="goals" href="#/goals"/>
+        <mui.ListItem primaryText="reports" href="#/reports"/>
+      </mui.List>
+    </mui.Drawer>
+  );
+}
+
+function DailyGoalFrame(props) {
+  return (
+    <MuiThemeProvider>
+      <div>
+        <mui.AppBar title="daily goal"/>
+        <DailyGoalMenu/>
+        <div style={{paddingLeft: "220px", marginTop: "20px", width: "100%"}} className="container">
+          {props.Content}
+        </div>
+      </div>
+    </MuiThemeProvider>
+  );
+}
+
 class DailyGoalApp extends React.Component<IAppProps, IAppState> {
   constructor(props) {
     super(props);
@@ -176,14 +207,18 @@ class DailyGoalApp extends React.Component<IAppProps, IAppState> {
     }
   }
 
-  render() {
-    return <div><h1>DailyGoal</h1><GoalList goals={this.state.goals} model={this.model()}/></div>;
+  render() {    
+    return (
+      <DailyGoalFrame Content={<GoalList goals={this.state.goals} model={this.model()}/>}/>
+    );
   }
 }
 
 ReactDOM.render(
-  <MuiThemeProvider>
-    <DailyGoalApp/>
-  </MuiThemeProvider>,
+  <Router history={browserHistory}>
+    <Route path="/" component={DailyGoalApp}/>
+    <Route path="/reports" component={DailyGoalApp}/>
+    <Route path="/goals" component={DailyGoalApp}/>
+  </Router>,
   document.getElementById("main")
 );

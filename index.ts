@@ -42,7 +42,7 @@ var doneRecordApplication = new CrudApplication(DoneRecordApplication, authentic
 doneRecordApplication.Join(app);
 
 app.get('/', EnsureAuthenticated, function (req, res) {
-  res.redirect('/DailyGoal');
+  res.render("index");
 });
 
 function WrapRoute(processor: (req: Request, res: Response) => Promise<void>) : (Request, Response) => void

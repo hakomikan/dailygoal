@@ -7,6 +7,7 @@ module.exports = {
       "react",
       "react-dom",
       "material-ui",
+      "react-router",
       "axios",
       "material-ui/svg-icons"],
   },

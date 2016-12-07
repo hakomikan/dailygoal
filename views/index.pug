@@ -1,7 +1,16 @@
-extends ./layout.pug
-
-block content
-    h1 HelloWorld
-    ul
-        each goal in items
-            li #{goal.subject}
+doctype html
+html(lang="jp")
+    head
+        title="Daily Goal"
+        != LRScript
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        script(type='text/javascript')
+        script(src="/bower_components/jquery/dist/jquery.js")
+        script(src="/bower_components/jquery-ui/jquery-ui.js")
+        script(src="/bower_components/bootstrap/dist/js/bootstrap.js")
+        link(href="/bower_components/bootstrap/dist/css/bootstrap.css", rel="stylesheet")
+    body
+        div(id="main")
+        script(src="/dist/common.js")
+        script(src="/dist/main.js")

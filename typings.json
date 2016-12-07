@@ -3,7 +3,8 @@
   "dependencies": {
     "material-ui": "registry:npm/material-ui#0.15.1+20160817172421",
     "react": "registry:npm/react#15.0.1+20160601175240",
-    "react-dom": "registry:npm/react-dom#15.0.1+20160826174104"
+    "react-dom": "registry:npm/react-dom#15.0.1+20160826174104",
+    "react-router": "registry:npm/react-router#2.4.0+20160915183637"
   },
   "globalDependencies": {
     "axios": "registry:dt/axios#0.9.1+20161016142654",
