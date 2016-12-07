@@ -22,6 +22,7 @@ app.set('port', (process.env.PORT || 3000));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 app.use('/dist',  express.static(__dirname + '/dist'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -64,9 +65,22 @@ app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', WrapRoute(async (req, res) => {
   });
 }));
 
-app.get('/api/goals', WrapRoute(async(req,res)=>{
+app.get('/api/goals', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   let goals = await dailyGoalApplication.model.find();
   res.json(goals);
+}));
+
+app.post('/api/goals', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  req.body.owner_id = authenticator.GetUserId(req);
+  console.log(`create... ${JSON.stringify(req.body)}`);
+  await dailyGoalApplication.model.create(req.body);
+  res.send(200);
+}));
+
+app.delete('/api/goals/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  console.log(`deleting: ${req.params["id"]}`)
+  await dailyGoalApplication.model.remove({_id: req.params["id"]});
+  res.send(200);
 }));
 
 app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', WrapRoute(async (req, res) => {

@@ -30,9 +30,9 @@
     "webpack": "^1.13.3"
   },
   "scripts": {
-    "debug": "./node_modules/.bin/tsc && webpack && node --inspect index.js",
-    "start": "./node_modules/.bin/tsc && webpack && node index.js",
-    "test": "./node_modules/.bin/tsc && webpack && jasmine",
+    "debug": "./node_modules/.bin/tsc && node --inspect index.js",
+    "start": "./node_modules/.bin/tsc && node index.js",
+    "test": "./node_modules/.bin/tsc && jasmine",
     "postinstall": "bower install && typings install && ./node_modules/.bin/tsc && webpack"
   },
   "repository": {

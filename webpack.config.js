@@ -1,7 +1,17 @@
+var webpack = require("webpack");
+
 module.exports = {
-  entry: './apps/Client.tsx',
+  entry: {
+    main: './apps/Client.tsx',
+    common: [
+      "react",
+      "react-dom",
+      "material-ui",
+      "axios",
+      "material-ui/svg-icons"],
+  },
   output: {
-    filename: './dist/bundle.js'
+    filename: './dist/[name].js'
   },
   devtool: "source-map",
   resolve: {
@@ -16,5 +26,11 @@ module.exports = {
     ]
   },
   externals: {
-  }
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      chunks: ['main'],
+    })
+  ]  
 }
