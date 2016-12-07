@@ -11,6 +11,13 @@ interface Goal {
   subject: string;
 }
 
+interface Report {
+  _id?: string,
+  goal: Goal,
+  date: Date
+}
+
+
 interface IAppProps {
 }
 
@@ -120,6 +127,39 @@ function GoalList(props) {
     </div>);
 }
 
+class ReportItem extends React.Component<{report: Report, model: any}, {}> {
+  constructor(props) {
+    super(props);
+  }
+
+  delete() {
+    this.props.model.delete(this.props.report._id);
+  }
+
+  render() {
+    return (
+      <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #A7FFEB"}}>
+        <mui.CardHeader
+          title={this.props.report.goal.subject}
+          subtitle={this.props.report.date}>
+          <div style={{float: "right"}}>
+            <mui.FlatButton label="Delete" labelStyle={{color: "#EF9A9A"}} icon={<icons.ActionDelete color="#EF9A9A"/>} onClick={()=>this.delete()}/>
+          </div>
+        </mui.CardHeader>
+      </mui.Card>
+    );
+  }
+}
+
+function ReportList(props) {
+  return (
+    <div>
+      {props.reports.map(
+        v => <ReportItem key={v._id} report={v} model={props.model}/>
+      )}
+    </div>);
+}
+
 function DailyGoalMenu(props){
   return (
     <mui.Drawer
@@ -214,10 +254,74 @@ class DailyGoalApp extends React.Component<IAppProps, IAppState> {
   }
 }
 
+class ReportApp extends React.Component<IAppProps, {reports: Report[]}> {
+  constructor(props) {
+    super(props);
+    this.state = {reports: []};
+  }
+
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    (async ()=>{
+      let reports = (await axios.get<Report[]>("/api/reports")).data;
+      this.setState(prevState => ({reports: reports}));
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
+  }
+
+  create(report: Report)
+  {
+    (async ()=>{
+      await axios.post("/api/reports", report);
+      this.refresh();
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
+  }
+
+  update(id: string, report: Report)
+  {
+    (async ()=>{
+      await axios.put(`/api/reports/${id}`, report);
+      this.refresh();
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });    
+  }
+
+  delete(id: string) {
+    (async ()=>{
+      await axios.delete(`/api/reports/${id}`);
+      this.refresh();
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
+  }
+
+  model(): any {
+    return {
+      create: this.create.bind(this),
+      update: this.update.bind(this),
+      delete: this.delete.bind(this),
+      refresh: this.refresh.bind(this)
+    }
+  }
+
+  render() {
+    return (
+      <DailyGoalFrame Content={<ReportList reports={this.state.reports} model={this.model()}/>}/>
+    );
+  }
+}
+
 ReactDOM.render(
   <Router history={browserHistory}>
     <Route path="/" component={DailyGoalApp}/>
-    <Route path="/reports" component={DailyGoalApp}/>
+    <Route path="/reports" component={ReportApp}/>
     <Route path="/goals" component={DailyGoalApp}/>
   </Router>,
   document.getElementById("main")
