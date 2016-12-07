@@ -83,6 +83,12 @@ app.delete('/api/goals/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   res.send(200);
 }));
 
+app.put('/api/goals/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  console.log(`updating: ${req.params["id"]}`);
+  await dailyGoalApplication.model.update({_id: req.params["id"]}, req.body);
+  res.send(200);
+}));
+
 app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', WrapRoute(async (req, res) => {
   let hasGoal = 0 < await doneRecordApplication.model.count({goal: req.params.goal_id, date: new Date(req.params.date)});
   if(!hasGoal) {

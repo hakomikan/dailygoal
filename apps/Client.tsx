@@ -17,9 +17,11 @@ interface IAppState {
   goals: Goal[];
 }
 
-class GoalItem extends React.Component<{goal: Goal, model: any}, {}> {
+class GoalItem extends React.Component<{goal: Goal, model: any}, {isEditing: boolean}> {
   constructor(props) {
     super(props);
+
+    this.state = {isEditing: false};
   }
 
   delete() {
@@ -27,24 +29,36 @@ class GoalItem extends React.Component<{goal: Goal, model: any}, {}> {
   }
 
   render() {
-    return (
-      <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #A7FFEB"}}>
-        <mui.CardHeader
-          title={this.props.goal.subject}
-          subtitle={this.props.goal._id}>
-          <div style={{float: "right"}}>
-            <mui.FlatButton label="Edit" labelStyle={{color: "#90CAF9"}} icon={<icons.ContentCreate color="#90CAF9"/>} onClick={()=>console.log("edit")}/>
-            <mui.FlatButton label="Delete" labelStyle={{color: "#EF9A9A"}} icon={<icons.ActionDelete color="#EF9A9A"/>} onClick={()=>this.delete()}/>
-          </div>
-        </mui.CardHeader>
-      </mui.Card>
-    );
+    if(this.state.isEditing) {
+      return (
+        <GoalEditor goal={this.props.goal} model={this.props.model} cancel={()=>{this.setState({isEditing: false})}}/>
+      );
+    }
+    else {
+      return (
+        <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #A7FFEB"}}>
+          <mui.CardHeader
+            title={this.props.goal.subject}
+            subtitle={this.props.goal._id}>
+            <div style={{float: "right"}}>
+              <mui.FlatButton label="Edit" labelStyle={{color: "#90CAF9"}} icon={<icons.ContentCreate color="#90CAF9"/>} onClick={()=>this.setState({isEditing: true})}/>
+              <mui.FlatButton label="Delete" labelStyle={{color: "#EF9A9A"}} icon={<icons.ActionDelete color="#EF9A9A"/>} onClick={()=>this.delete()}/>
+            </div>
+          </mui.CardHeader>
+        </mui.Card>
+      );
+    }
   }
 }
 
-class GoalEditor extends React.Component<{model: any}, any> {
+class GoalEditor extends React.Component<{goal?: Goal, model: any, cancel?: ()=>void}, {isUpdating: boolean, goal: Goal}> {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isUpdating: this.props.goal ? true : false, 
+      goal: this.props.goal ? this.props.goal : { subject: "" },
+    }
   }
 
   render() {
@@ -53,17 +67,42 @@ class GoalEditor extends React.Component<{model: any}, any> {
         <mui.CardActions>
           <mui.TextField
             floatingLabelText="Subject"
+            defaultValue={this.state.goal.subject}
             ref="subject"
           />
-          <mui.FlatButton
-            label="Create"
-            style={{float: "right"}}
-            labelStyle={{color: "#90CAF9"}}
-            icon={<icons.ContentAdd color="#90CAF9"/>}
-            onClick={()=>{
-              this.props.model.create({subject: (this.refs["subject"] as any).getValue().trim()});
-              (this.refs["subject"] as any).input.value = "";
-            }}/>
+          {(() => {
+            if(this.state.isUpdating) {
+              return (
+                <div style={{float: "right"}}>
+                  <mui.FlatButton
+                    label="Update"
+                    labelStyle={{color: "#90CAF9"}}
+                    icon={<icons.ContentCreate color="#90CAF9"/>}
+                    onClick={()=>{
+                      console.log(`update: ${this.props.goal._id}`);
+                      this.props.model.update(this.props.goal._id, {subject: (this.refs["subject"] as any).getValue().trim()});
+                      this.props.cancel();
+                    }}/>
+                  <mui.FlatButton
+                    label="Cancel"
+                    labelStyle={{color: "#90CAF9"}}
+                    icon={<icons.ContentUndo color="#90CAF9"/>}
+                    onClick={this.props.cancel}
+                    />
+                </div>);
+            }
+            else {
+              return (<mui.FlatButton
+                label="Create"
+                style={{float: "right"}}
+                labelStyle={{color: "#90CAF9"}}
+                icon={<icons.ContentAdd color="#90CAF9"/>}
+                onClick={()=>{
+                  this.props.model.create({subject: (this.refs["subject"] as any).getValue().trim()});
+                  (this.refs["subject"] as any).input.value = "";
+                }}/>);
+            }
+          })()}
         </mui.CardActions>
       </mui.Card>
     );
@@ -109,7 +148,17 @@ class DailyGoalApp extends React.Component<IAppProps, IAppState> {
     });
   }
 
-  delete(id: number) {
+  update(id: string, goal: Goal)
+  {
+    (async ()=>{
+      await axios.put(`/api/goals/${id}`, goal);
+      this.refresh();
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });    
+  }
+
+  delete(id: string) {
     (async ()=>{
       await axios.delete(`/api/goals/${id}`);
       this.refresh();
@@ -121,6 +170,7 @@ class DailyGoalApp extends React.Component<IAppProps, IAppState> {
   model(): any {
     return {
       create: this.create.bind(this),
+      update: this.update.bind(this),
       delete: this.delete.bind(this),
       refresh: this.refresh.bind(this)
     }
