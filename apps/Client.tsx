@@ -1,10 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-var injectTapEventPlugin = require("react-tap-event-plugin");
-injectTapEventPlugin();
 import * as axios from "axios";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as mui from "material-ui";
+import * as icons from "material-ui/svg-icons";
 
 interface Goal {
   _id: string;
@@ -20,22 +19,34 @@ interface IAppState {
 
 function GoalItem(props: {goal: Goal}) {
   return (
-    <p key={props.goal._id}>
-      <mui.Paper>{props.goal.subject}</mui.Paper>
-    </p>
+    <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #64FFDA"}}>
+      <mui.CardHeader
+        title={props.goal.subject}
+        subtitle={props.goal._id}>
+        <div style={{float: "right"}}>
+          <mui.FlatButton label="Edit" labelStyle={{color: "#90CAF9"}} icon={<icons.ContentCreate color="#90CAF9"/>} onClick={()=>console.log("edit")}/>
+          <mui.FlatButton label="Delete" labelStyle={{color: "#EF9A9A"}} icon={<icons.ActionDelete color="#EF9A9A"/>} onClick={()=>console.log("Delete")}/>
+        </div>
+      </mui.CardHeader>
+    </mui.Card>
   );
 }
+
 
 function GoalList(props) {
   return (
     <div>
       {props.goals.map(
-        v => (
-          <div style={{paddingBottom: "1 em"}} key={v._id}>
-            <mui.Paper>{v.subject}</mui.Paper>
-          </div>
-        )
+        v => <GoalItem key={v._id} goal={v}/>
       )}
+      <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #64FFDA"}}>
+        <mui.CardActions>
+          <mui.TextField
+            floatingLabelText="Subject"
+          />
+          <mui.FlatButton label="Create" style={{float: "right"}} primary={true} labelStyle={{color: "#90CAF9"}} icon={<icons.ContentAdd color="#90CAF9"/>} onClick={()=>console.log("edit")}/>
+        </mui.CardActions>
+      </mui.Card>
     </div>);
 }
 
@@ -55,7 +66,7 @@ class DailyGoalApp extends React.Component<IAppProps, IAppState> {
   }
 
   render() {
-    return <GoalList goals={this.state.goals}/>;
+    return <div><h1>DailyGoal</h1><GoalList goals={this.state.goals}/></div>;
   }
 }
 
