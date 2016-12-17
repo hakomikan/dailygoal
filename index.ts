@@ -50,7 +50,7 @@ function WrapRoute(processor: (req: Request, res: Response) => Promise<void>) : 
   return (req, res) => {
     processor(req, res)
     .catch(err => {
-      console.log(`ERROR: ${err}`);
+      console.log(`ERROR(ServerSide): ${err}`);
     });
   }
 }
@@ -74,19 +74,43 @@ app.post('/api/goals', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   req.body.owner_id = authenticator.GetUserId(req);
   console.log(`create... ${JSON.stringify(req.body)}`);
   await dailyGoalApplication.model.create(req.body);
-  res.send(200);
+  res.sendStatus(200);
 }));
 
 app.delete('/api/goals/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   console.log(`deleting: ${req.params["id"]}`)
   await dailyGoalApplication.model.remove({_id: req.params["id"]});
-  res.send(200);
+  res.sendStatus(200);
 }));
 
 app.put('/api/goals/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   console.log(`updating: ${req.params["id"]}`);
   await dailyGoalApplication.model.update({_id: req.params["id"]}, req.body);
-  res.send(200);
+  res.sendStatus(200);
+}));
+
+app.get('/api/reports', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  let items = await doneRecordApplication.model.find().populate("goal_id");
+  res.json(items);
+}));
+
+app.post('/api/reports', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  req.body.owner_id = authenticator.GetUserId(req);
+  console.log(`create... ${JSON.stringify(req.body)}`);
+  await doneRecordApplication.model.create(req.body);
+  res.sendStatus(200);
+}));
+
+app.delete('/api/reports/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  console.log(`deleting: ${req.params["id"]}`)
+  await doneRecordApplication.model.remove({_id: req.params["id"]});
+  res.sendStatus(200);
+}));
+
+app.put('/api/reports/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  console.log(`updating: ${req.params["id"]}`);
+  await doneRecordApplication.model.update({_id: req.params["id"]}, req.body);
+  res.sendStatus(200);
 }));
 
 app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', WrapRoute(async (req, res) => {

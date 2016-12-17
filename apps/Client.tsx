@@ -4,7 +4,7 @@ import * as axios from "axios";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as mui from "material-ui";
 import * as icons from "material-ui/svg-icons";
-import { Router, Route, Link, browserHistory } from "react-router";
+import { Router, Route, Link, browserHistory, hashHistory } from "react-router";
 
 interface Goal {
   _id?: string;
@@ -13,7 +13,7 @@ interface Goal {
 
 interface Report {
   _id?: string,
-  goal: Goal,
+  goal_id: string,
   date: Date
 }
 
@@ -140,7 +140,7 @@ class ReportItem extends React.Component<{report: Report, model: any}, {}> {
     return (
       <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #A7FFEB"}}>
         <mui.CardHeader
-          title={this.props.report.goal.subject}
+          title={this.props.report.goal_id}
           subtitle={this.props.report.date}>
           <div style={{float: "right"}}>
             <mui.FlatButton label="Delete" labelStyle={{color: "#EF9A9A"}} icon={<icons.ActionDelete color="#EF9A9A"/>} onClick={()=>this.delete()}/>
@@ -159,7 +159,6 @@ function ReportList(props) {
       )}
     </div>);
 }
-
 function DailyGoalMenu(props){
   return (
     <mui.Drawer
@@ -169,8 +168,8 @@ function DailyGoalMenu(props){
     >
       <mui.AppBar title="daily goal"/>
       <mui.List defaultValue={1}>
-        <mui.ListItem primaryText="goals" href="#/goals"/>
-        <mui.ListItem primaryText="reports" href="#/reports"/>
+        <Link to="/goals"><mui.ListItem primaryText="goals"/></Link>
+        <Link to="/reports"><mui.ListItem primaryText="reports"/></Link>
       </mui.List>
     </mui.Drawer>
   );
@@ -319,7 +318,7 @@ class ReportApp extends React.Component<IAppProps, {reports: Report[]}> {
 }
 
 ReactDOM.render(
-  <Router history={browserHistory}>
+  <Router history={hashHistory}>
     <Route path="/" component={DailyGoalApp}/>
     <Route path="/reports" component={ReportApp}/>
     <Route path="/goals" component={DailyGoalApp}/>
