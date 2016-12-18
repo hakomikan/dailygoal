@@ -5,6 +5,9 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as mui from "material-ui";
 import * as icons from "material-ui/svg-icons";
 import { Router, Route, Link, browserHistory, hashHistory } from "react-router";
+var Calendar : any = require("material-ui/DatePicker/Calendar");
+var injectTapEventPlugin : any = require('react-tap-event-plugin');
+injectTapEventPlugin();
 
 interface Goal {
   _id?: string;
@@ -170,6 +173,7 @@ function DailyGoalMenu(props){
       <mui.List defaultValue={1}>
         <Link to="/goals"><mui.ListItem primaryText="goals"/></Link>
         <Link to="/reports"><mui.ListItem primaryText="reports"/></Link>
+        <Link to="/calender"><mui.ListItem primaryText="calender"/></Link>
       </mui.List>
     </mui.Drawer>
   );
@@ -317,11 +321,113 @@ class ReportApp extends React.Component<IAppProps, {reports: Report[]}> {
   }
 }
 
+class CalenderApp extends React.Component<IAppProps, IAppState> {
+  constructor(props) {
+    super(props);
+    this.state = {goals: []};
+  }
+
+  componentDidMount() {
+    this.refresh();
+  }
+
+  refresh() {
+    (async ()=>{
+      let goals = (await axios.get<Goal[]>("/api/goals")).data;
+      this.setState(prevState => ({goals: goals}));
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
+  }
+
+  create(goal: Goal)
+  {
+    (async ()=>{
+      await axios.post("/api/goals", goal);
+      this.refresh();
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
+  }
+
+  update(id: string, goal: Goal)
+  {
+    (async ()=>{
+      await axios.put(`/api/goals/${id}`, goal);
+      this.refresh();
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });    
+  }
+
+  delete(id: string) {
+    (async ()=>{
+      await axios.delete(`/api/goals/${id}`);
+      this.refresh();
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
+  }
+
+  model(): any {
+    return {
+      create: this.create.bind(this),
+      update: this.update.bind(this),
+      delete: this.delete.bind(this),
+      refresh: this.refresh.bind(this)
+    }
+  }
+
+  mystringify(obj) : string {
+    var cache = [];
+    return JSON.stringify(obj, (key, value) => {
+      if (typeof value == 'object' && value == null)
+        if(-1 < cache.indexOf(value))
+        {
+          return cache.indexOf(value);
+        }
+        cache.push(value);
+      return value
+    });
+  } 
+
+  render() {
+    return (
+      <DailyGoalFrame Content={
+        <div className="row">
+        <div className="col-md-4" style={{width: "320px"}}>
+        <mui.Paper style={{width: "310px"}}>
+        <Calendar.default
+            autoOk={false}
+            disableYearSelection={false}
+            firstDayOfWeek={0}
+            locale={"en-US"}
+            onTouchTapDay={(e,d)=>{e=this.mystringify(d);console.log(`touch ${d}`);}}
+            mode={"portrait"}
+            open={false}
+            ref="calendar"
+            onTouchTapCancel={(e)=>{e=this.mystringify(e);console.log(`cancel ${e}`)}}
+            onTouchTapOk={(e,d)=>{e=JSON.stringify(e);console.log(`ok ${e}`)}}
+            shouldDisableDate={(d)=>{return false;}}
+        />
+        </mui.Paper>
+        </div>
+        <div className="col-md-8">
+          <GoalList goals={this.state.goals} model={this.model()}/>
+        </div>
+        </div>
+      }/>
+    );
+  }
+}
+
+
 ReactDOM.render(
   <Router history={hashHistory}>
     <Route path="/" component={DailyGoalApp}/>
     <Route path="/reports" component={ReportApp}/>
     <Route path="/goals" component={DailyGoalApp}/>
+    <Route path="/calender" component={CalenderApp}/>
   </Router>,
   document.getElementById("main")
 );
