@@ -1,6 +1,7 @@
 Vagrant::configure("2") do |config|
     config.vm.provider "virtualbox" do |v|
         v.linked_clone = true
+        v.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
         v.memory = 4096
     end
 
@@ -55,8 +56,8 @@ Vagrant::configure("2") do |config|
         inline: <<-SHELL
             mkdir -p ~/tmp_node_modules
             mkdir -p ~/app/node_modules        
-            sudo bindfs /home/vagrant/app /home/vagrant/app -p 0755 -u vagrant
-            sudo bindfs /home/vagrant/tmp_node_modules /home/vagrant/app/node_modules -p 0755 -u vagrant
+            sudo bindfs /home/vagrant/app /home/vagrant/app -p 0755 -u vagrant -o nonempty
+            sudo bindfs /home/vagrant/tmp_node_modules /home/vagrant/app/node_modules -p 0755 -u vagrant -o nonempty
         SHELL
     
     if ENV['USE_DOTFILES'] == "1" then
