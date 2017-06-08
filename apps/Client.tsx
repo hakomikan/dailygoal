@@ -368,7 +368,7 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
 
   refresh() {
     (async ()=>{
-      let goals = (await axios.get<Goal[]>("/api/goals")).data;
+      let goals = (await axios.get<Goal[]>("/api/date/2017-06-09")).data;      // HERE
       console.log(goals);
       this.setState(prevState => ({goals: goals}));
     })().catch(reason=>{

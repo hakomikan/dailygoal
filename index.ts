@@ -101,6 +101,12 @@ app.post('/api/reports', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   res.sendStatus(200);
 }));
 
+app.get('/api/date/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  let goals = await dailyGoalApplication.model.find().populate("records");
+  // HERE
+  res.json(goals);
+}));
+
 app.delete('/api/reports/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   console.log(`deleting: ${req.params["id"]}`)
   await doneRecordApplication.model.remove({_id: req.params["id"]});
