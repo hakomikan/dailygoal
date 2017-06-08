@@ -162,6 +162,7 @@ function ReportList(props) {
       )}
     </div>);
 }
+
 function DailyGoalMenu(props){
   return (
     <mui.Drawer
@@ -321,6 +322,40 @@ class ReportApp extends React.Component<IAppProps, {reports: Report[]}> {
   }
 }
 
+class DateRecordItem extends React.Component<{report: Report, model: any}, {}> {
+  constructor(props) {
+    super(props);
+  }
+
+  delete() {
+    this.props.model.delete(this.props.report._id);
+  }
+
+  render() {
+    return (
+      <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #A7FFEB"}}>
+        <mui.CardHeader
+          title={this.props.report.goal_id}
+          subtitle={this.props.report.date}>
+          <div style={{float: "right"}}>
+            <mui.FlatButton label="Delete" labelStyle={{color: "#EF9A9A"}} icon={<icons.ActionDelete color="#EF9A9A"/>} onClick={()=>this.delete()}/>
+          </div>
+        </mui.CardHeader>
+      </mui.Card>
+    );
+  }
+}
+
+
+function DateRecordList(props) {
+  return (
+    <div>
+      {props.reports.map(
+        v => <DateRecordItem key={v._id} report={v} model={props.model}/>
+      )}
+    </div>);
+}
+
 class CalenderApp extends React.Component<IAppProps, IAppState> {
   constructor(props) {
     super(props);
@@ -334,6 +369,7 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
   refresh() {
     (async ()=>{
       let goals = (await axios.get<Goal[]>("/api/goals")).data;
+      console.log(goals);
       this.setState(prevState => ({goals: goals}));
     })().catch(reason=>{
       console.error(`ERROR: ${reason}`);
@@ -395,32 +431,31 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
     return (
       <DailyGoalFrame Content={
         <div className="row">
-        <div className="col-md-4" style={{width: "320px"}}>
-        <mui.Paper style={{width: "310px"}}>
-        <Calendar.default
-            autoOk={false}
-            disableYearSelection={false}
-            firstDayOfWeek={0}
-            locale={"en-US"}
-            onTouchTapDay={(e,d)=>{e=this.mystringify(d);console.log(`touch ${d}`);}}
-            mode={"portrait"}
-            open={false}
-            ref="calendar"
-            onTouchTapCancel={(e)=>{e=this.mystringify(e);console.log(`cancel ${e}`)}}
-            onTouchTapOk={(e,d)=>{e=JSON.stringify(e);console.log(`ok ${e}`)}}
-            shouldDisableDate={(d)=>{return false;}}
-        />
-        </mui.Paper>
-        </div>
-        <div className="col-md-8">
-          <GoalList goals={this.state.goals} model={this.model()}/>
-        </div>
+          <div className="col-md-4" style={{width: "320px"}}>
+            <mui.Paper style={{width: "310px"}}>
+              <Calendar.default
+                  autoOk={false}
+                  disableYearSelection={false}
+                  firstDayOfWeek={0}
+                  locale={"en-US"}
+                  onTouchTapDay={(e,d)=>{e=this.mystringify(d);console.log(`touch ${d}`);}}
+                  mode={"portrait"}
+                  open={false}
+                  ref="calendar"
+                  onTouchTapCancel={(e)=>{e=this.mystringify(e);console.log(`cancel ${e}`)}}
+                  onTouchTapOk={(e,d)=>{e=JSON.stringify(e);console.log(`ok ${e}`)}}
+                  shouldDisableDate={(d)=>{return false;}}
+              />
+            </mui.Paper>
+          </div>
+          <div className="col-md-8">
+            <DateRecordList reports={this.state.goals} model={this.model()}/>
+          </div>
         </div>
       }/>
     );
   }
 }
-
 
 ReactDOM.render(
   <Router history={hashHistory}>
@@ -428,6 +463,7 @@ ReactDOM.render(
     <Route path="/reports" component={ReportApp}/>
     <Route path="/goals" component={DailyGoalApp}/>
     <Route path="/calender" component={CalenderApp}/>
+    <Route path="/calender/:date" component={CalenderApp}/>    
   </Router>,
   document.getElementById("main")
 );
