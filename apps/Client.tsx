@@ -332,13 +332,16 @@ class DateRecordItem extends React.Component<{goal: Goal, model: any}, {}> {
   }
 
   render() {
-    var self = this;
     return (
       <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #A7FFEB"}}>
         <mui.CardHeader
           title={
             <mui.Checkbox
-              label={self.props.goal.subject}
+              label={this.props.goal.subject}
+              onClick={()=>{
+                this.props.model.toggle(this.props.goal)
+                }
+              }
             />}
           subtitle={this.props.goal._id}>
         </mui.CardHeader>
@@ -372,6 +375,17 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
       let goals = (await axios.get<Goal[]>("/api/date/2017-06-09")).data;      // HERE
       console.log(goals);
       this.setState(prevState => ({goals: goals}));
+    })().catch(reason=>{
+      console.error(`ERROR: ${reason}`);
+    });
+  }
+
+
+  toggle(goal: Goal, date: Date)
+  {
+    (async ()=>{
+      await axios.put(`/api/2017-06-09/${goal._id}/check`);
+      this.refresh();
     })().catch(reason=>{
       console.error(`ERROR: ${reason}`);
     });
@@ -411,7 +425,8 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
       create: this.create.bind(this),
       update: this.update.bind(this),
       delete: this.delete.bind(this),
-      refresh: this.refresh.bind(this)
+      refresh: this.refresh.bind(this),
+      toggle: this.toggle.bind(this),
     }
   }
 

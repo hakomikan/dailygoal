@@ -120,7 +120,17 @@ app.put('/api/reports/:id', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   res.sendStatus(200);
 }));
 
+app.put('/api/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', EnsureAuthenticated, WrapRoute(async(req,res)=>{
+  console.log("check!!!!");
+  let hasGoal = 0 < await doneRecordApplication.model.count({goal: req.params.goal_id, date: new Date(req.params.date)});
+  if(!hasGoal) {
+    await new doneRecordApplication.model({goal: req.params.goal_id, date: new Date(req.params.date)}).save();
+  }
+  res.sendStatus(200);
+}));
+
 app.get('/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', WrapRoute(async (req, res) => {
+  console.log("check!!!!");
   let hasGoal = 0 < await doneRecordApplication.model.count({goal: req.params.goal_id, date: new Date(req.params.date)});
   if(!hasGoal) {
     await new doneRecordApplication.model({goal: req.params.goal_id, date: new Date(req.params.date)}).save();
