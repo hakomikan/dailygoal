@@ -35,7 +35,7 @@ Vagrant::configure("2") do |config|
             wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 
             wget -O- https://bootstrap.pypa.io/get-pip.py | sudo python
-            pip install percol
+            sudo pip install percol
         SHELL
 
     config.vm.provision "export env",
@@ -55,9 +55,12 @@ Vagrant::configure("2") do |config|
         privileged: false,
         inline: <<-SHELL
             mkdir -p ~/tmp_node_modules
-            mkdir -p ~/app/node_modules        
+            mkdir -p ~/app/node_modules
+            mkdir -p ~/tmp_dist
+            mkdir -p ~/app/dist
             sudo bindfs /home/vagrant/app /home/vagrant/app -p 0755 -u vagrant -o nonempty
             sudo bindfs /home/vagrant/tmp_node_modules /home/vagrant/app/node_modules -p 0755 -u vagrant -o nonempty
+            sudo bindfs /home/vagrant/tmp_dist /home/vagrant/app/dist -p 0755 -u vagrant -o nonempty
         SHELL
     
     if ENV['USE_DOTFILES'] == "1" then
