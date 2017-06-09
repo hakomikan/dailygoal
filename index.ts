@@ -104,6 +104,7 @@ app.post('/api/reports', EnsureAuthenticated, WrapRoute(async(req,res)=>{
 app.get('/api/date/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', EnsureAuthenticated, WrapRoute(async(req,res)=>{
   let goals = await dailyGoalApplication.model.find().populate("records");
   // HERE
+  console.log(`DateReport: ${req.params["date"]}, ${JSON.stringify(goals)}`);
   res.json(goals);
 }));
 

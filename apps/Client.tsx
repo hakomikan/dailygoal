@@ -322,24 +322,25 @@ class ReportApp extends React.Component<IAppProps, {reports: Report[]}> {
   }
 }
 
-class DateRecordItem extends React.Component<{report: Report, model: any}, {}> {
+class DateRecordItem extends React.Component<{goal: Goal, model: any}, {}> {
   constructor(props) {
     super(props);
   }
 
   delete() {
-    this.props.model.delete(this.props.report._id);
+    this.props.model.delete(this.props.goal._id);
   }
 
   render() {
+    var self = this;
     return (
       <mui.Card style={{marginBottom: "1em", borderLeft: "8px solid #A7FFEB"}}>
         <mui.CardHeader
-          title={this.props.report.goal_id}
-          subtitle={this.props.report.date}>
-          <div style={{float: "right"}}>
-            <mui.FlatButton label="Delete" labelStyle={{color: "#EF9A9A"}} icon={<icons.ActionDelete color="#EF9A9A"/>} onClick={()=>this.delete()}/>
-          </div>
+          title={
+            <mui.Checkbox
+              label={self.props.goal.subject}
+            />}
+          subtitle={this.props.goal._id}>
         </mui.CardHeader>
       </mui.Card>
     );
@@ -351,7 +352,7 @@ function DateRecordList(props) {
   return (
     <div>
       {props.reports.map(
-        v => <DateRecordItem key={v._id} report={v} model={props.model}/>
+        v => <DateRecordItem key={v._id} goal={v} model={props.model}/>
       )}
     </div>);
 }
