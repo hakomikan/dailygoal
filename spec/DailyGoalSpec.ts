@@ -25,7 +25,6 @@ describe("DailyGoalApplication", () => {
 
   afterAll(WrapAsync(async () => {
     await Database.Finalize();
-    console.log("aaaaaaaaaaaa");
   }));
 
   it("should access to app root", (done) => {
