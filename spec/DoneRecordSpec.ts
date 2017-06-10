@@ -12,6 +12,7 @@ describe("DoneRecord", () => {
 
   afterAll(WrapAsync(async () => {
     await Database.Finalize();
+    console.log("aaaaaaaaaaaa");
   }));
 
   it("should access the goal's subject.", WrapAsync( async () => {
