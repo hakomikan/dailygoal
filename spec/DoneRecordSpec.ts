@@ -45,5 +45,9 @@ describe("DoneRecord", () => {
     }).findOne();
     expect(populated3.records.length).toBe(1);
     expect(populated3.records[0].date).toEqual(targetDate);
+
+    let populated4: any = await (dailyGoalModel as any).FindDateRecord(targetDate).findOne();
+    expect(populated4.records.length).toBe(1);
+    expect(populated4.records[0].date).toEqual(targetDate);
   }));
 });
