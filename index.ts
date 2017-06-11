@@ -102,9 +102,8 @@ app.post('/api/reports', EnsureAuthenticated, WrapRoute(async(req,res)=>{
 }));
 
 app.get('/api/date/:date([0-9]{4}-[0-9]{2}-[0-9]{2})', EnsureAuthenticated, WrapRoute(async(req,res)=>{
-  let goals = await dailyGoalApplication.model.find().populate("records");
-  // HERE
-  console.log(`DateReport: ${req.params["date"]}, ${JSON.stringify(goals)}`);
+  let goals = await (dailyGoalApplication.model as any).FindDateRecord(new Date(req.params["date"]));
+  console.log(`DateReport: ${req.params["date"]}, ${goals}`);
   res.json(goals);
 }));
 
@@ -125,6 +124,15 @@ app.put('/api/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/check', EnsureAuthentic
   let hasGoal = 0 < await doneRecordApplication.model.count({goal: req.params.goal_id, date: new Date(req.params.date)});
   if(!hasGoal) {
     await new doneRecordApplication.model({goal: req.params.goal_id, date: new Date(req.params.date)}).save();
+  }
+  res.sendStatus(200);
+}));
+
+app.delete('/api/:date([0-9]{4}-[0-9]{2}-[0-9]{2})/:goal_id/uncheck', WrapRoute(async (req, res) => {
+  console.log("uncheck!!!!");
+  let hasGoal = 0 < await doneRecordApplication.model.count({goal: req.params.goal_id, date: new Date(req.params.date)});
+  if(hasGoal) {
+    await doneRecordApplication.model.remove({goal: req.params.goal_id, date: new Date(req.params.date)});
   }
   res.sendStatus(200);
 }));

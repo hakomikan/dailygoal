@@ -12,6 +12,7 @@ injectTapEventPlugin();
 interface Goal {
   _id?: string;
   subject: string;
+  records?: Report[];
 }
 
 interface Report {
@@ -19,7 +20,6 @@ interface Report {
   goal_id: string,
   date: Date
 }
-
 
 interface IAppProps {
 }
@@ -338,6 +338,7 @@ class DateRecordItem extends React.Component<{goal: Goal, model: any}, {}> {
           title={
             <mui.Checkbox
               label={this.props.goal.subject}
+              checked={this.props.goal.records.length > 0}
               onClick={()=>{
                 this.props.model.toggle(this.props.goal)
                 }
@@ -384,7 +385,14 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
   toggle(goal: Goal, date: Date)
   {
     (async ()=>{
-      await axios.put(`/api/2017-06-09/${goal._id}/check`);
+      if(goal.records.length > 0)
+      {
+        await axios.delete(`/api/2017-06-09/${goal._id}/uncheck`);
+      }
+      else
+      {
+        await axios.put(`/api/2017-06-09/${goal._id}/check`);
+      }
       this.refresh();
     })().catch(reason=>{
       console.error(`ERROR: ${reason}`);
