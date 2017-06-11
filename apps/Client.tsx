@@ -5,6 +5,7 @@ import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as mui from "material-ui";
 import * as icons from "material-ui/svg-icons";
 import { Router, Route, Link, browserHistory, hashHistory } from "react-router";
+var moment : any = require("moment");
 var Calendar : any = require("material-ui/DatePicker/Calendar");
 var injectTapEventPlugin : any = require('react-tap-event-plugin');
 injectTapEventPlugin();
@@ -26,6 +27,11 @@ interface IAppProps {
 
 interface IAppState {
   goals: Goal[];
+}
+
+interface ICalendarState {
+  goals: Goal[];
+  date: Date;  
 }
 
 class GoalItem extends React.Component<{goal: Goal, model: any}, {isEditing: boolean}> {
@@ -361,24 +367,31 @@ function DateRecordList(props) {
     </div>);
 }
 
-class CalenderApp extends React.Component<IAppProps, IAppState> {
+class CalenderApp extends React.Component<IAppProps, ICalendarState> {
   constructor(props) {
     super(props);
-    this.state = {goals: []};
+    this.state = {goals: [], date: new Date()};
   }
 
   componentDidMount() {
     this.refresh();
   }
 
-  refresh() {
+  refresh(date : Date = null) {
     (async ()=>{
-      let goals = (await axios.get<Goal[]>("/api/date/2017-06-09")).data;      // HERE
-      console.log(goals);
-      this.setState(prevState => ({goals: goals}));
+      if (!date)
+      {
+        date = this.state.date;
+      }
+      let goals = (await axios.get<Goal[]>(`/api/date/${this.getDateString(date)}`)).data;      // HERE
+      this.setState(prevState => ({goals: goals, date: date}));
     })().catch(reason=>{
       console.error(`ERROR: ${reason}`);
     });
+  }
+
+  getDateString(date : Date) {
+    return moment(date).format("YYYY-MM-DD");
   }
 
 
@@ -387,11 +400,11 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
     (async ()=>{
       if(goal.records.length > 0)
       {
-        await axios.delete(`/api/2017-06-09/${goal._id}/uncheck`);
+        await axios.delete(`/api/${this.getDateString(this.state.date)}/${goal._id}/uncheck`);
       }
       else
       {
-        await axios.put(`/api/2017-06-09/${goal._id}/check`);
+        await axios.put(`/api/${this.getDateString(this.state.date)}/${goal._id}/check`);
       }
       this.refresh();
     })().catch(reason=>{
@@ -462,7 +475,7 @@ class CalenderApp extends React.Component<IAppProps, IAppState> {
                   disableYearSelection={false}
                   firstDayOfWeek={0}
                   locale={"en-US"}
-                  onTouchTapDay={(e,d)=>{e=this.mystringify(d);console.log(`touch ${d}`);}}
+                  onTouchTapDay={(e,d)=>{this.refresh(new Date(d));}}
                   mode={"portrait"}
                   open={false}
                   ref="calendar"
