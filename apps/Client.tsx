@@ -4,7 +4,8 @@ import * as axios from "axios";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as mui from "material-ui";
 import * as icons from "material-ui/svg-icons";
-import { Router, Route, Link, browserHistory, hashHistory } from "react-router";
+import { Router, Route, browserHistory, hashHistory } from "react-router";
+import { HashRouter, Link } from "react-router-dom";
 var moment : any = require("moment");
 var Calendar : any = require("material-ui/DatePicker/Calendar");
 var injectTapEventPlugin : any = require('react-tap-event-plugin');
@@ -495,12 +496,14 @@ class CalenderApp extends React.Component<IAppProps, ICalendarState> {
 }
 
 ReactDOM.render(
-  <Router history={hashHistory}>
-    <Route path="/" component={DailyGoalApp}/>
-    <Route path="/reports" component={ReportApp}/>
-    <Route path="/goals" component={DailyGoalApp}/>
-    <Route path="/calender" component={CalenderApp}/>
-    <Route path="/calender/:date" component={CalenderApp}/>    
-  </Router>,
+  <HashRouter>
+    <div>
+      <Route exact path="/" component={DailyGoalApp}/>
+      <Route path="/reports" component={ReportApp}/>
+      <Route path="/goals" component={DailyGoalApp}/>
+      <Route path="/calender" component={CalenderApp}/>
+      <Route path="/calender/:date" component={CalenderApp}/>    
+    </div>
+  </HashRouter>,
   document.getElementById("main")
 );

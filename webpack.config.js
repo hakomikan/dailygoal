@@ -15,18 +15,14 @@ module.exports = {
     filename: './dist/[name].js'
   },
   devtool: "source-map",
-  resolve: {
-    extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
-  },
   module: {
-    loaders: [
-      { test: /\.tsx?$/, loader: "ts-loader" }
+    rules: [
+      { 
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        exclude: /node_modules/,
+      }
     ],
-    preLoaders: [
-      { test: /\.js$/, loader: "source-map-loader" }
-    ]
-  },
-  externals: {
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({

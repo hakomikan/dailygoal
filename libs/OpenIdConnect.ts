@@ -10,6 +10,7 @@ export function PrepareOpenIdConnect(app: Application)
   app.use(passport.session());
 
   passport.use(new OpenidConnectStrategy({
+      issuer: "accounts.google.com",
       authorizationURL: "https://accounts.google.com/o/oauth2/auth",
       tokenURL: "https://accounts.google.com/o/oauth2/token",
       userInfoURL: "https://www.googleapis.com/oauth2/v1/userinfo",
