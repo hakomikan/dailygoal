@@ -14,7 +14,7 @@ describe("DoneRecord", () => {
     await Database.Finalize();
   }));
 
-  fit("should access the goal's subject.", WrapAsync( async () => {
+  it("should access the goal's subject.", WrapAsync( async () => {
     var dailyGoalModel = CrudApplication.RegisterModel(DailyGoalApplication);
     var doneRecordModel = CrudApplication.RegisterModel(DoneRecordApplication);
 
