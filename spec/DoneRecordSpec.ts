@@ -1,4 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
 import {WrapAsync} from "./helper/helper";
 import {CrudApplication} from '../libs/CrudApplication';
 import {DailyGoalApplication} from '../apps/DailyGoal';

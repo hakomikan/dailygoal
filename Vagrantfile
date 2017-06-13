@@ -22,13 +22,17 @@ Vagrant::configure("2") do |config|
         inline: <<-SHELL
             export DEBIAN_FRONTEND=noninteractive
 
-            sudo apt-get install -y wget curl 
-
             sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
             echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
             curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+
+            curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+            echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
             
             sudo apt-get update
+            
+            sudo apt-get install -y yarn
+            sudo apt-get install -y wget curl 
 
             sudo apt-get install -y git zsh whois nodejs emacs lv bindfs
             sudo apt-get install -y mongodb-org=3.2.9 mongodb-org-server=3.2.9 mongodb-org-shell=3.2.9 mongodb-org-mongos=3.2.9 mongodb-org-tools=3.2.9
@@ -59,7 +63,7 @@ Vagrant::configure("2") do |config|
             mkdir -p ~/tmp_dist
             mkdir -p ~/app/dist
             sudo bindfs /home/vagrant/app /home/vagrant/app -p 0755 -u vagrant -o nonempty
-            sudo bindfs /home/vagrant/tmp_node_modules /home/vagrant/app/node_modules -p 0755 -u vagrant -o nonempty
+            # sudo bindfs /home/vagrant/tmp_node_modules /home/vagrant/app/node_modules -p 0755 -u vagrant -o nonempty
             sudo bindfs /home/vagrant/tmp_dist /home/vagrant/app/dist -p 0755 -u vagrant -o nonempty
         SHELL
     

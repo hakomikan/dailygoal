@@ -1,5 +1,3 @@
-/// <reference path="typings/index.d.ts" />
-
 var express = require('express');
 var pug = require('pug');
 var path = require("path"); 
@@ -19,7 +17,7 @@ var app = express();
 
 app.set('port', (process.env.PORT || 3000));
 
-app.use('/bower_components',  express.static(__dirname + '/bower_components'));
+app.use('/node_modules',  express.static(__dirname + '/node_modules'));
 app.use('/dist',  express.static(__dirname + '/dist'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());

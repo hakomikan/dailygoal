@@ -1,4 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
 import * as request from "supertest";
 import * as express from "express";
 import * as helpers from "./helper/helper";

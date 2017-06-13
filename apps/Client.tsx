@@ -1,11 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as axios from "axios";
+import axios from "axios";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import * as mui from "material-ui";
 import * as icons from "material-ui/svg-icons";
-import { Router, Route, browserHistory, hashHistory } from "react-router";
-import { HashRouter, Link } from "react-router-dom";
+import { HashRouter, Link, Route, Switch } from "react-router-dom";
 var moment : any = require("moment");
 var Calendar : any = require("material-ui/DatePicker/Calendar");
 var injectTapEventPlugin : any = require('react-tap-event-plugin');
@@ -178,7 +177,7 @@ function DailyGoalMenu(props){
       open={true}
     >
       <mui.AppBar title="daily goal"/>
-      <mui.List defaultValue={1}>
+      <mui.List>
         <Link to="/goals"><mui.ListItem primaryText="goals"/></Link>
         <Link to="/reports"><mui.ListItem primaryText="reports"/></Link>
         <Link to="/calender"><mui.ListItem primaryText="calender"/></Link>
@@ -213,7 +212,7 @@ class DailyGoalApp extends React.Component<IAppProps, IAppState> {
 
   refresh() {
     (async ()=>{
-      let goals = (await axios.get<Goal[]>("/api/goals")).data;
+      let goals = (await axios.get("/api/goals")).data as Goal[];
       this.setState(prevState => ({goals: goals}));
     })().catch(reason=>{
       console.error(`ERROR: ${reason}`);
@@ -277,7 +276,7 @@ class ReportApp extends React.Component<IAppProps, {reports: Report[]}> {
 
   refresh() {
     (async ()=>{
-      let reports = (await axios.get<Report[]>("/api/reports")).data;
+      let reports = (await axios.get("/api/reports")).data as Report[];
       this.setState(prevState => ({reports: reports}));
     })().catch(reason=>{
       console.error(`ERROR: ${reason}`);
@@ -384,7 +383,7 @@ class CalenderApp extends React.Component<IAppProps, ICalendarState> {
       {
         date = this.state.date;
       }
-      let goals = (await axios.get<Goal[]>(`/api/date/${this.getDateString(date)}`)).data;      // HERE
+      let goals = (await axios.get(`/api/date/${this.getDateString(date)}`)).data as Goal[];
       this.setState(prevState => ({goals: goals, date: date}));
     })().catch(reason=>{
       console.error(`ERROR: ${reason}`);
@@ -498,11 +497,11 @@ class CalenderApp extends React.Component<IAppProps, ICalendarState> {
 ReactDOM.render(
   <HashRouter>
     <div>
-      <Route exact path="/" component={DailyGoalApp}/>
-      <Route path="/reports" component={ReportApp}/>
-      <Route path="/goals" component={DailyGoalApp}/>
-      <Route path="/calender" component={CalenderApp}/>
-      <Route path="/calender/:date" component={CalenderApp}/>    
+      <Route exact path='/' component={() => <DailyGoalApp/>} />
+      <Route path="/reports" component={() => <ReportApp/>}/>
+      <Route path="/goals" component={() => <DailyGoalApp/>}/>
+      <Route path="/calender" component={() => <CalenderApp/>}/>
+      <Route path="/calender/:date" component={() => <CalenderApp/>}/>    
     </div>
   </HashRouter>,
   document.getElementById("main")
