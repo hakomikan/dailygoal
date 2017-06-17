@@ -60,9 +60,10 @@
   },
   "scripts": {
     "debug": "./node_modules/typescript/bin/tsc && node --inspect index.js",
-    "start": "./node_modules/typescript/bin/tsc && node index.js",
+    "start": "./node_modules/typescript/bin/tsc && ./node_modules/webpack/bin/webpack.js && node index.js",
     "build": "./node_modules/webpack/bin/webpack.js",
-    "test": "./node_modules/typescript/bin/tsc && ./node_modules/jasmine/bin/jasmine.js"
+    "test": "./node_modules/typescript/bin/tsc && ./node_modules/jasmine/bin/jasmine.js",
+    "postinstall": "./node_modules/typescript/bin/tsc && ./node_modules/webpack/bin/webpack.js"
   },
   "repository": {
     "type": "git",
