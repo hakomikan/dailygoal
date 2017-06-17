@@ -19,6 +19,7 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use('/node_modules',  express.static(__dirname + '/node_modules'));
 app.use('/dist',  express.static(__dirname + '/dist'));
+app.use('/static',  express.static(__dirname + '/static'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.set('views', path.join(__dirname, 'views'));
