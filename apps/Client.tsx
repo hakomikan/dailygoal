@@ -9,6 +9,8 @@ var moment : any = require("moment");
 var Calendar : any = require("material-ui/DatePicker/Calendar");
 var injectTapEventPlugin : any = require('react-tap-event-plugin');
 injectTapEventPlugin();
+import "jquery";
+import "bootstrap/dist/css/bootstrap.css";
 
 interface Goal {
   _id?: string;
