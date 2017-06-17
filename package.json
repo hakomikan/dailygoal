@@ -47,22 +47,22 @@
     "react-tap-event-plugin": "^2.0.1",
     "style-loader": "^0.18.2",
     "typescript": "^2.0.9",
-    "url-loader": "^0.5.9"
+    "url-loader": "^0.5.9",
+    "ts-loader": "^2.1.0",
+    "source-map-loader": "^0.2.1",
+    "webpack": "^2.6.1"
   },
   "devDependencies": {
     "@types/jasmine": "^2.5.52",
     "@types/supertest": "^2.0.0",
     "jasmine": "^2.5.2",
-    "source-map-loader": "^0.2.1",
-    "supertest": "^3.0.0",
-    "ts-loader": "^2.1.0",
-    "webpack": "^2.6.1"
+    "supertest": "^3.0.0"
   },
   "scripts": {
     "debug": "./node_modules/typescript/bin/tsc && node --inspect index.js",
     "start": "./node_modules/typescript/bin/tsc && ./node_modules/webpack/bin/webpack.js && node index.js",
     "build": "./node_modules/webpack/bin/webpack.js",
-    "test": "./node_modules/typescript/bin/tsc && ./node_modules/jasmine/bin/jasmine.js",
+    "test": "./node_modules/typescript/bin/tsc -p tsconfig.dev.json && ./node_modules/jasmine/bin/jasmine.js",
     "postinstall": "./node_modules/typescript/bin/tsc && ./node_modules/webpack/bin/webpack.js"
   },
   "repository": {
